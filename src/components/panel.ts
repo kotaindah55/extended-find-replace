@@ -177,7 +177,7 @@ export class SearchPanel implements Panel {
 	}
 
 	private _highlight() {
-		if (!this.mdInfo.editor) return;
+		if (!this.mdInfo.editor || !this.counter.total) return;
 
 		let { editor } = this.mdInfo,
 			ranges = selectionsToRanges(editor.listSelections());
@@ -203,12 +203,12 @@ export class SearchPanel implements Panel {
 	}
 
 	private _count(): void {
-		let lastSelection = this.view.state.selection.ranges.at(-1),
+		let lastSelection = this.view.state.selection.ranges.at(-1)!,
 			index = this.counter.current, // 1-based
 			prevIndex = index,
 			max = this.counter.total;
-		if (!lastSelection)
-			return;
+		
+		if (!max) return;
 
 		let curMatch = this.matchBuffer.get(index - 1);
 		while (!curMatch || curMatch.to <= lastSelection.from && index < max) {
