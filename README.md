@@ -40,12 +40,12 @@ This plugin provides two commands:
 Run those commands manually via command palette prompt, or set specific keymap for each.
 
 Upon expanded search panel, certain keymaps can be used to navigate mathced text (The same behavior as the native one):
-- `F3`: Advance to the next match (`Enter` can be used only when the search field is focused).
-- `Shift` `F3`: Go back to the previous match (`Shift` `Enter` can be used only when the search field is focused).
-- `Alt` `Enter`: Select all the matches (only when the search field is focused).
-- `Enter`: Replace current selected match (only when the replace field is focused).
-- `Ctrl` `Alt` `Enter`: Replace all the matches (only when the replace field is focused).
-- `Esc`: Close the panel.
+- <kbd>F3</kbd>: Advance to the next match (<kbd>Enter</kbd> can be used only when the search field is focused).
+- <kbd>Shift</kbd> <kbd>F3</kbd>: Go back to the previous match (<kbd>Shift</kbd> <kbd>Enter</kbd> can be used only when the search field is focused).
+- <kbd>Alt</kbd> <kbd>Enter</kbd>: Select all the matches (only when the search field is focused).
+- <kbd>Enter</kbd>: Replace current selected match (only when the replace field is focused).
+- <kbd>Ctrl</kbd> <kbd>Alt</kbd> <kbd>Enter</kbd>: Replace all the matches (only when the replace field is focused).
+- <kbd>Esc</kbd>: Close the panel.
 
 > [!Note]
 >
