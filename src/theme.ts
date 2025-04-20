@@ -10,8 +10,11 @@ export const defaultTheme = EditorView.theme({
 	},
 
 	".cm-searchMatch.cm-searchMatch-selected": {
-		backgroundColor: "hsla(var(--color-accent-hsl), 0.3)",
-		boxShadow: "none",
+		backgroundColor: "hsla(var(--color-accent-hsl), 0.3)"
+	},
+
+	".obsidian-search-match-highlight .cm-searchMatch-selected": {
+		boxShadow: "none"
 	},
 
 	"span.obsidian-search-match-highlight:has(.cm-searchMatch-selected)": {
