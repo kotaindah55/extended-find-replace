@@ -1,23 +1,19 @@
 import { getSearchQuery, openSearchPanel } from "@codemirror/search";
 import { ChangeSpec } from "@codemirror/state";
-import { panels, Command as CMCommand, EditorView } from "@codemirror/view";
+import { Command as CMCommand, EditorView } from "@codemirror/view";
 import { Command as ObsidianCommand, Editor } from "obsidian";
-import { panelsConfig, searchPanelChange, searchPanelConfig, showReplace } from "src/cm-extensions";
+import { searchPanelChange, searchPanelConfig, showReplace } from "src/cm-extensions";
 
 export const searchCmd: ObsidianCommand = {
 	id: "open-editor-search",
 	name: "Open editor search for current note",
 	editorCallback(editor: Editor): void {
-		let cmView = editor.cm,
-			editorEl = editor.editorComponent?.editorEl;
+		let cmView = editor.cm;
 		cmView.dispatch({
 			effects: [
 				searchPanelConfig.reconfigure([
 					showReplace.of(false)
-				]),
-				panelsConfig.reconfigure(
-					panels({ topContainer: editorEl })
-				)
+				])
 			],
 			annotations: searchPanelChange.of({ showReplace: false })
 		});
@@ -29,16 +25,12 @@ export const searchAndReplaceCmd: ObsidianCommand = {
 	id: "open-editor-search-and-replace",
 	name: "Open editor search & replace for current note",
 	editorCallback(editor: Editor): void {
-		let cmView = editor.cm,
-			editorEl = editor.editorComponent?.editorEl;
+		let cmView = editor.cm;
 		cmView.dispatch({
 			effects: [
 				searchPanelConfig.reconfigure([
 					showReplace.of(true)
-				]),
-				panelsConfig.reconfigure(
-					panels({ topContainer: editorEl })
-				)
+				])
 			],
 			annotations: searchPanelChange.of({ showReplace: true })
 		});
