@@ -136,6 +136,7 @@ export class SearchPanel implements Panel {
 	public destroy(): void {
 		if ("scope" in this.mdInfo)
 			this.mdInfo.scope = null;
+		this._onDestroy();
 	}
 
 	public findNext(): boolean {
@@ -175,7 +176,6 @@ export class SearchPanel implements Panel {
 	}
 
 	public close(): boolean {
-		this._onClose();
 		return closeSearchPanel(this.view);
 	}
 
@@ -450,7 +450,7 @@ export class SearchPanel implements Panel {
 		});
 	}
 
-	private _onClose(): void {
+	private _onDestroy(): void {
 		setTimeout(() => {
 			this.view.dispatch({
 				effects: primarySelectionAdjust.reconfigure([])
