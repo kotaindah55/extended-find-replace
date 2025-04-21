@@ -371,7 +371,7 @@ export class SearchPanel implements Panel {
 			.onClick(() => this.replaceInSelection());
 	}
 
-	private _showRuleMenu(evt: MouseEvent) {
+	private _openRuleMenu(evt: MouseEvent) {
 		new Menu()
 			.addItem(item => {
 				item
