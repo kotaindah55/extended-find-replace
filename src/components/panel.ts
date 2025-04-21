@@ -271,7 +271,7 @@ export class SearchPanel implements Panel {
 					iconName: "settings",
 					cls: ["search-toggle", "search-toggle-show-rules"],
 					tooltip: "Open rules",
-					callback: evt => this._showRuleMenu(evt)
+					callback: evt => this._openRuleMenu(evt)
 				}
 			]
 		});
