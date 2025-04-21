@@ -446,7 +446,8 @@ export class SearchPanel implements Panel {
 		setTimeout(() => {
 			this.view.dispatch({
 				effects: primarySelectionAdjust.reconfigure(showPrimarySelection)
-			})
+			});
+			this.mdInfo.editor?.editorComponent?.editorEl.addClass("has-search-panel");
 		});
 	}
 
@@ -455,6 +456,7 @@ export class SearchPanel implements Panel {
 			this.view.dispatch({
 				effects: primarySelectionAdjust.reconfigure([])
 			})
+			this.mdInfo.editor?.editorComponent?.editorEl.removeClass("has-search-panel");
 		});
 	}
 }

@@ -25,3 +25,9 @@
 .cm-search-panel.mod-replace-mode .replace-toggle-btn {
 	transform: rotate(180deg);
 }
+
+.markdown-source-view.has-search-panel .cm-line {
+	&::selection, & ::selection {
+		background-color: transparent;
+	}
+}
