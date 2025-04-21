@@ -1,7 +1,7 @@
 import { App, MarkdownView, Plugin } from "obsidian";
 import { EditorView } from "@codemirror/view";
 import { search, SearchQuery, SearchQueryConfig, setSearchQuery } from "@codemirror/search";
-import { restoreLastQuery, panelsConfig, searchPanelConfig, showReplace } from "src/cm-extensions";
+import { restoreLastQuery, panelsConfig, searchPanelConfig, showReplace } from "src/cm-extensions/search";
 import { SearchPanel } from "src/components/panel";
 import { searchAndReplaceCmd, searchCmd } from "src/commands";
 import { defaultTheme } from "src/theme";

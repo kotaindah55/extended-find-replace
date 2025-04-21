@@ -24,7 +24,7 @@ import { updateQuery, hideNativeSearch, selectionsToRanges } from "src/utils/edi
 import { RangeBuffer } from "src/utils/range-buffer";
 import { createSearch } from "src/components/search";
 import { bindSearchScope } from "src/scope";
-import { searchPanelChange, showReplace } from "src/cm-extensions";
+import { searchPanelChange, showReplace } from "src/cm-extensions/search";
 import { replaceInSelection, searchAndReplaceCmd, searchCmd } from "src/commands";
 import ExtendedFindReplacePlugin from "src/main";
 

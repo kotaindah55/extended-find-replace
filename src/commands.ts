@@ -2,7 +2,7 @@ import { getSearchQuery, openSearchPanel } from "@codemirror/search";
 import { ChangeSpec } from "@codemirror/state";
 import { Command as CMCommand, EditorView } from "@codemirror/view";
 import { Command as ObsidianCommand, Editor } from "obsidian";
-import { searchPanelChange, searchPanelConfig, showReplace } from "src/cm-extensions";
+import { searchPanelChange, searchPanelConfig, showReplace } from "src/cm-extensions/search";
 
 export const searchCmd: ObsidianCommand = {
 	id: "open-editor-search",

@@ -4,7 +4,12 @@ import { Annotation, Compartment, Facet, StateEffect } from "@codemirror/state";
 import { EditorView, panels, ViewPlugin } from "@codemirror/view";
 import ExtendedFindReplacePlugin from "src/main";
 
-function _onEditorInit(view: EditorView, editor?: Editor, query?: SearchQuery) {
+/**
+ * Ensure that update is only dispatched after the CM view have being
+ * fully initialized. Therefore, we use setTimeout instead of calling it
+ * directly which can emit an Error.
+ */
+function _onEditorInit(view: EditorView, editor?: Editor, query?: SearchQuery): void {
 	let effects: StateEffect<unknown>[] = [
 		panelsConfig.reconfigure(panels({
 			topContainer: editor?.editorComponent?.editorEl
@@ -12,9 +17,6 @@ function _onEditorInit(view: EditorView, editor?: Editor, query?: SearchQuery) {
 	];
 
 	if (query) effects.push(setSearchQuery.of(query));
-	// Ensure that update is only dispatched after the CM view have being
-	// fully initialized. Therefore, we use setTimeout instead of calling it
-	// directly which can emit an Error.
 	setTimeout(() => view.dispatch({ effects }));
 }
 
