@@ -27,6 +27,7 @@ import { bindSearchScope } from "src/scope";
 import { searchPanelChange, showReplace } from "src/cm-extensions/search";
 import { replaceInSelection, searchAndReplaceCmd, searchCmd } from "src/commands";
 import ExtendedFindReplacePlugin from "src/main";
+import { primarySelectionAdjust, showPrimarySelection } from "src/cm-extensions/draw-selection";
 
 interface SearchCounter {
 	current: number;
@@ -129,6 +130,7 @@ export class SearchPanel implements Panel {
 		this._toggleReplaceEl();
 		this._toggleCounterEl();
 		this._attachHandlers();
+		this._onMount();
 	}
 
 	public destroy(): void {
@@ -173,6 +175,7 @@ export class SearchPanel implements Panel {
 	}
 
 	public close(): boolean {
+		this._onClose();
 		return closeSearchPanel(this.view);
 	}
 
@@ -437,5 +440,21 @@ export class SearchPanel implements Panel {
 
 	private _attachHandlers(): void {
 		bindSearchScope(this.mdInfo.app, this);
+	}
+
+	private _onMount(): void {
+		setTimeout(() => {
+			this.view.dispatch({
+				effects: primarySelectionAdjust.reconfigure(showPrimarySelection)
+			})
+		});
+	}
+
+	private _onClose(): void {
+		setTimeout(() => {
+			this.view.dispatch({
+				effects: primarySelectionAdjust.reconfigure([])
+			})
+		});
 	}
 }

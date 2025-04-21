@@ -9,6 +9,7 @@ import { ExtendedFindReplaceSettings } from "src/typings";
 import { DEFAULT_SETTINGS } from "src/settings/config";
 import { ExtendedFindReplaceSettingTab } from "src/settings/setting-tab";
 import { getQueryConfig } from "src/utils/editor-utils";
+import { primarySelectionAdjust } from "src/cm-extensions/draw-selection";
 
 function _iterMarkdownView(app: App, callback: (view: MarkdownView) => unknown): void {
 	app.workspace.getLeavesOfType("markdown").forEach(leaf => {
@@ -38,6 +39,7 @@ export default class ExtendedFindReplacePlugin extends Plugin {
 				createPanel: view => new SearchPanel(view, this),
 				scrollToMatch: range => EditorView.scrollIntoView(range, { y: "center" })
 			}),
+			primarySelectionAdjust.of([]),
 			defaultTheme
 		]);
 
