@@ -20,7 +20,7 @@ writeFileSync("versions.json", JSON.stringify(versions, null, "\t"));
 // update package.json with target version
 let packageConf = JSON.parse(readFileSync("package.json", "utf-8"));
 packageConf.version = targetVersion;
-writeFileSync("manifest.json", JSON.stringify(packageConf, null, "\t"));
+writeFileSync("package.json", JSON.stringify(packageConf, null, "\t"));
 
 execSync(`git add ${tobeCommitted} && git commit ${tobeCommitted} -m "${message}"`);
 execSync(`git push origin`);
