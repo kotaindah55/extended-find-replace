@@ -1,0 +1,17 @@
+[1.0.1]
+### Adjustment
+Primary selection will always be displayed when search panel was opened.
+
+### Bug Fix
+Text being highlighted even there is no match found.
+---
+[1.0.0]
+# First release 🎉
+
+For more informations, see README.
+---
+
+// A changelog must be opened by its version wrapped by square brackets,
+// and closed by three consecutive dashes.
+
+// Latest changelog must be located in the beginning of the document.
