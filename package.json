@@ -4,13 +4,16 @@
 	"main": "main.js",
 	"description": "Overhaul editor find-and-replace functionality.",
 	"scripts": {
-		"dev": "node esbuild.config.mjs",
-		"build": "tsc -noEmit -skipLibCheck && node esbuild.config.mjs production",
-		"version": "node version-bump.mjs && git add manifest.json versions.json package.json"
+		"dev": "npx tsx scripts/esbuild.config.mts",
+		"build": "tsc -noEmit -skipLibCheck && npx tsx scripts/esbuild.config.mts production",
+		"version": "npx tsx scripts/version-bump.mts",
+		"changelog": "npx tsx scripts/print-changelog.mts",
+		"publish": "npx tsx scripts/publish.mts"
 	},
 	"keywords": ["obsidian-plugin"],
 	"author": "Kotaindah55",
 	"license": "MIT",
+	"type": "module",
 	"devDependencies": {
 		"@codemirror/search": "^6.5.10",
 		"@codemirror/state": "^6.5.2",
