@@ -3,7 +3,7 @@
 	"name": "Extended Find & Replace",
 	"author": "Kotaindah55",
 	"description": "Overhaul editor find-and-replace functionality.",
-	"version": "1.0.0",
+	"version": "1.0.1",
 	"minAppVersion": "1.6.2",
 	"isDesktopOnly": false
 }

@@ -1,6 +1,6 @@
 {
 	"name": "extended-find-replace",
-	"version": "1.0.0",
+	"version": "1.0.1",
 	"main": "main.js",
 	"description": "Overhaul editor find-and-replace functionality.",
 	"scripts": {
@@ -10,7 +10,9 @@
 		"changelog": "npx tsx scripts/print-changelog.mts",
 		"publish": "npx tsx scripts/publish.mts"
 	},
-	"keywords": ["obsidian-plugin"],
+	"keywords": [
+		"obsidian-plugin"
+	],
 	"author": "Kotaindah55",
 	"license": "MIT",
 	"type": "module",
