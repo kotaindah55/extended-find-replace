@@ -22,5 +22,5 @@ let packageConf = JSON.parse(readFileSync("package.json", "utf-8"));
 packageConf.version = targetVersion;
 writeFileSync("manifest.json", JSON.stringify(packageConf, null, "\t"));
 
-execSync(`git add ${tobeCommitted} && git commit ${tobeCommitted} -m ${message}`);
+execSync(`git add ${tobeCommitted} && git commit ${tobeCommitted} -m "${message}"`);
 execSync(`git push origin`);
