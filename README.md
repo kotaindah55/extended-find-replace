@@ -78,6 +78,10 @@ In the settings, there are two options available:
 - **Shared query**: When enabled, same search query will be shared among all available editors. It keeps the query synchronized even if you move to another note.
 - **Remember last query**: Save the last input query and restore it even after closing the app.
 
+## ⚠️ Caveat
+
+Due to performance reason, "Replace all" and "Replace in selection" wouldn't work if the result exceeds 1000 matches.
+
 ## 🙏 Acknowledgment
 
 Specially thanks to:
