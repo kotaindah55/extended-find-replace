@@ -22,7 +22,7 @@ import {
 } from "obsidian";
 import { updateQuery, hideNativeSearch, selectionsToRanges } from "src/utils/editor-utils";
 import { RangeBuffer } from "src/utils/range-buffer";
-import { createSearch } from "src/components/search";
+import { createSearch } from "src/components/search-input";
 import { bindSearchScope } from "src/scope";
 import { searchPanelChange, showReplace } from "src/cm-extensions/search";
 import { replaceInSelection, searchAndReplaceCmd, searchCmd } from "src/commands";
