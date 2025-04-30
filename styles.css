@@ -31,3 +31,7 @@
 		background-color: transparent;
 	}
 }
+
+.workspace-leaf-content[data-mode="preview"]>.view-content>.markdown-source-view {
+	display: none !important;
+}
