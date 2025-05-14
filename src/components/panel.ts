@@ -100,7 +100,7 @@ export class SearchPanel implements Panel {
 		let resetCounter = false;
 		for (let tr of update.transactions)
 			for (let effect of tr.effects) {
-				if (effect.is(setSearchQuery) && !effect.value.eq(this.query)) {
+				if (effect.is(setSearchQuery) && !this._compare(effect.value)) {
 					this._setQuery(effect.value, false);
 					resetCounter = true;
 				}
@@ -193,6 +193,13 @@ export class SearchPanel implements Panel {
 
 	private _removeHighlight(): void {
 		this.mdInfo.editor?.removeHighlights("obsidian-search-match-highlight");
+	}
+
+	private _compare(other: SearchQuery): boolean {
+		return (
+			this.query.eq(other) &&
+			this.query.literal == other.literal
+		);
 	}
 
 	private _setQuery(query: SearchQuery, internal: boolean): void {
