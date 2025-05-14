@@ -38,12 +38,6 @@ declare module "@codemirror/search" {
 	type SearchQueryConfig = ConstructorParameters<typeof SearchQuery>[0];
 }
 
-declare global {
-	type Writable<T> = {
-		-readonly [P in keyof T]: T[P];
-	}
-}
-
 export interface ExtendedFindReplaceSettings {
 	rememberLastQuery: boolean;
 	sharedQuery: boolean;
