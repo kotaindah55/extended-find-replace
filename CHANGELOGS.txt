@@ -1,3 +1,7 @@
+[1.0.2]
+### Bug Fix
+Editor mode appears in reading mode.
+
 [1.0.1]
 ### Adjustment
 Primary selection will always be displayed when search panel was opened.
@@ -11,7 +15,7 @@ Text being highlighted even there is no match found.
 For more informations, see README.
 ---
 
-// A changelog must be opened by its version wrapped by square brackets,
+// A changelog must be opened by a version tag wrapped by square brackets,
 // and closed by three consecutive dashes.
 
 // Latest changelog must be located in the beginning of the document.
