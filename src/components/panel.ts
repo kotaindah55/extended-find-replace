@@ -27,7 +27,7 @@ import { bindSearchScope } from "src/scope";
 import { searchPanelChange, showReplace } from "src/cm-extensions/search";
 import { replaceInSelection, searchAndReplaceCmd, searchCmd } from "src/commands";
 import ExtendedFindReplacePlugin from "src/main";
-import { primarySelectionAdjust, showPrimarySelection } from "src/cm-extensions/draw-selection";
+import { primarySelectionAdjust, primarySelectionFallback } from "src/cm-extensions/draw-selection";
 
 interface SearchCounter {
 	current: number;
@@ -116,10 +116,13 @@ export class SearchPanel implements Panel {
 
 		if (update.transactions.some(tr => {
 			let config = tr.annotation(searchPanelChange);
-			if (config && config.showReplace != this.showReplace) {
+			if (config) {
+				this.searchField.inputEl.select();
+				if (config.showReplace == this.showReplace) return false;
 				this.showReplace = config.showReplace;
 				return true;
 			}
+			return false
 		})) {
 			this._toggleReplaceEl();
 		}
@@ -179,7 +182,7 @@ export class SearchPanel implements Panel {
 		return closeSearchPanel(this.view);
 	}
 
-	private _highlight() {
+	private _highlight(): void {
 		if (!this.mdInfo.editor || !this.counter.total) return;
 
 		let { editor } = this.mdInfo,
@@ -188,7 +191,7 @@ export class SearchPanel implements Panel {
 		editor.addHighlights(ranges, "obsidian-search-match-highlight", true);
 	}
 
-	private _removeHighlight() {
+	private _removeHighlight(): void {
 		this.mdInfo.editor?.removeHighlights("obsidian-search-match-highlight");
 	}
 
@@ -229,7 +232,7 @@ export class SearchPanel implements Panel {
 		this._drawCounter();
 	}
 
-	private _setCounter() {
+	private _setCounter(): void {
 		this.counter = { total: 0, current: 0, exceed: false };
 		if (!this.query.search || !this.query.valid) {
 			this._drawCounter();
@@ -248,7 +251,7 @@ export class SearchPanel implements Panel {
 		this._drawCounter();
 	}
 
-	private _drawCounter() {
+	private _drawCounter(): void {
 		if (!this.counterEl) return;
 		this.counterEl.innerText =
 			`${this.counter.current} / ${this.counter.total}${this.counter.exceed ? "+" : ""}`;
@@ -374,7 +377,7 @@ export class SearchPanel implements Panel {
 			.onClick(() => this.replaceInSelection());
 	}
 
-	private _openRuleMenu(evt: MouseEvent) {
+	private _openRuleMenu(evt: MouseEvent): void {
 		new Menu()
 			.addItem(item => {
 				item
@@ -439,13 +442,13 @@ export class SearchPanel implements Panel {
 	}
 
 	private _attachHandlers(): void {
-		bindSearchScope(this.mdInfo.app, this);
+		bindSearchScope(this);
 	}
 
 	private _onMount(): void {
 		setTimeout(() => {
 			this.view.dispatch({
-				effects: primarySelectionAdjust.reconfigure(showPrimarySelection)
+				effects: primarySelectionAdjust.reconfigure(primarySelectionFallback)
 			});
 			this.mdInfo.editor?.editorComponent?.editorEl.addClass("has-search-panel");
 		});
@@ -455,7 +458,7 @@ export class SearchPanel implements Panel {
 		setTimeout(() => {
 			this.view.dispatch({
 				effects: primarySelectionAdjust.reconfigure([])
-			})
+			});
 			this.mdInfo.editor?.editorComponent?.editorEl.removeClass("has-search-panel");
 		});
 	}

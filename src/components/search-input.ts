@@ -63,7 +63,7 @@ export function createSearch(spec: CreateSearchSpec): SearchComponent {
 			}
 
 			else if (callback)
-				btnEl.addEventListener("click", evt => callback(evt));
+				btnEl.addEventListener("click", callback);
 		});
 	});
 

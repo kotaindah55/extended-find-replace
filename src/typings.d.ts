@@ -3,6 +3,8 @@ import { EditorState } from "@codemirror/state";
 
 declare module "@codemirror/search" {
 	/**
+	 * Actually is an interface of `SearchCursor` value.
+	 * 
 	 * MIT licensed, copyright (c) by Marijn Haverbeke and others at
 	 * CodeMirror.
 	 * 
@@ -14,12 +16,19 @@ declare module "@codemirror/search" {
 	}
 
 	/**
+	 * Used internally by search commands to process the matches.
+	 * 
 	 * MIT licensed, copyright (c) by Marijn Haverbeke and others at
 	 * CodeMirror.
 	 * 
-	 * @see https://github.com/codemirror/view/blob/main/src/extension.ts
+	 * @see https://github.com/codemirror/search/blob/main/src/search.ts
 	 */
 	interface QueryType {
+		/**
+		 * Get replacement string for specific match.
+		 * 
+		 * @param result Specific match to get the correct replacement.
+		 */
 		getReplacement(result: SearchResult): string;
 	}
 
@@ -27,11 +36,17 @@ declare module "@codemirror/search" {
 	 * MIT licensed, copyright (c) by Marijn Haverbeke and others at
 	 * CodeMirror.
 	 * 
-	 * @see https://github.com/codemirror/view/blob/main/src/extension.ts
+	 * @see https://github.com/codemirror/search/blob/main/src/search.ts
 	 */
 	interface SearchQuery {
+		/**
+		 * When `literal` is set to `false`, it represents parsed search input,
+		 * which any escaped sequence within will be encoded to different
+		 * character.
+		 */
 		readonly unquoted: string;
 		getCursor(state: EditorState | Text, from?: number, to?: number): SearchCursor | RegExpCursor;
+		/** Create a `QueryType` instance from this query. */
 		create(): QueryType;
 	}
 

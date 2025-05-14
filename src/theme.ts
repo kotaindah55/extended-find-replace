@@ -1,5 +1,6 @@
 import { EditorView } from "@codemirror/view";
 
+/** Styling match highlight internally. */
 export const defaultTheme = EditorView.theme({
 	".cm-searchMatch": {
 		backgroundColor: "transparent",

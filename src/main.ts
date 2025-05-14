@@ -11,6 +11,10 @@ import { ExtendedFindReplaceSettingTab } from "src/settings/setting-tab";
 import { getQueryConfig } from "src/utils/editor-utils";
 import { primarySelectionAdjust } from "src/cm-extensions/draw-selection";
 
+/**
+ * Iterate available markdown views and run the given callback on every
+ * view that had been passed.
+ */
 function _iterMarkdownView(app: App, callback: (view: MarkdownView) => unknown): void {
 	app.workspace.getLeavesOfType("markdown").forEach(leaf => {
 		if (leaf.view instanceof MarkdownView)
@@ -20,6 +24,7 @@ function _iterMarkdownView(app: App, callback: (view: MarkdownView) => unknown):
 
 export default class ExtendedFindReplacePlugin extends Plugin {
 	public settings: ExtendedFindReplaceSettings;
+	/** Stored shared query. */
 	public activeSharedQuery?: SearchQuery;
 
 	private _settingTab: ExtendedFindReplaceSettingTab;
@@ -73,11 +78,11 @@ export default class ExtendedFindReplacePlugin extends Plugin {
 			if (cmView == exclude) return;
 			cmView.dispatch({
 				effects: setSearchQuery.of(sharedQuery)
-			})
+			});
 		});
 	}
 
-	public saveQuery(query: SearchQuery | SearchQueryConfig) {
+	public saveQuery(query: SearchQuery | SearchQueryConfig): void {
 		let queryConfig = query instanceof SearchQuery
 			? getQueryConfig(query)
 			: structuredClone(query);

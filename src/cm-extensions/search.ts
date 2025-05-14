@@ -65,6 +65,6 @@ export const restoreLastQuery = function (plugin: ExtendedFindReplacePlugin) {
 		else plugin.activeSharedQuery = getSearchQuery(view.state);
 
 		_onEditorInit(view, editor, query);
-		return {}
+		return {};
 	})
 };

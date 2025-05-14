@@ -23,6 +23,6 @@ const primarySelectionLayer = layer({
 	class: "cm-selectionLayer"
 });
 
-export const showPrimarySelection = [primarySelectionLayer];
+export const primarySelectionFallback = [primarySelectionLayer];
 
 export const primarySelectionAdjust = new Compartment();
