@@ -36,6 +36,11 @@ export function getQueryConfig(query: SearchQuery): SearchQueryConfig {
 	};
 }
 
+/** Get an empty search query. */
+export function getEmptyQuery(): SearchQuery {
+	return new SearchQuery({ search: "" });
+}
+
 export function selectionsToRanges(selections: EditorSelection[]): EditorRange[] {
 	return selections.map<EditorRange>(sel => {
 		let headAtFront = _headAtFront(sel);

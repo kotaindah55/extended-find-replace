@@ -8,7 +8,7 @@ import { defaultTheme } from "src/theme";
 import { ExtendedFindReplaceSettings } from "src/typings";
 import { DEFAULT_SETTINGS } from "src/settings/config";
 import { ExtendedFindReplaceSettingTab } from "src/settings/setting-tab";
-import { getQueryConfig } from "src/utils/editor-utils";
+import { getEmptyQuery, getQueryConfig } from "src/utils/editor-utils";
 import { primarySelectionAdjust } from "src/cm-extensions/draw-selection";
 
 /**
@@ -66,10 +66,22 @@ export default class ExtendedFindReplacePlugin extends Plugin {
 		await this.saveData(this.settings);
 	}
 
-	public shareQuery(query?: SearchQuery | SearchQueryConfig, exclude?: EditorView) {
-		let sharedQuery = query instanceof SearchQuery
-			? query
-			: new SearchQuery(query ?? this.settings.lastQuery);
+	/**
+	 * Set the same search query to all available markdown views.
+	 * 
+	 * @param query if not set and `rememberLastQuery` is enabled, it will be
+	 * supplied with the last query.
+	 * 
+	 * @param exclude `EditorView` instance that's being excluded.
+	 */
+	public shareQuery(query?: SearchQuery | SearchQueryConfig, exclude?: EditorView): void {
+		let { rememberLastQuery, lastQuery } = this.settings,
+			sharedQuery = query instanceof SearchQuery
+				? query
+				: new SearchQuery(query ?? rememberLastQuery
+					? lastQuery
+					: getEmptyQuery()
+				);
 
 		this.activeSharedQuery = sharedQuery;
 
