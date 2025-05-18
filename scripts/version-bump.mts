@@ -33,5 +33,10 @@ let packageConf = JSON.parse(readFileSync("package.json", "utf-8")) as PackageCo
 packageConf.version = targetVersion;
 writeFileSync("package.json", JSON.stringify(packageConf, null, "\t"));
 
-execSync(`git add ${tobeCommitted} && git commit ${tobeCommitted} -m "${message}"`);
-execSync(`git push origin`);
+try {
+	execSync(`git add ${tobeCommitted} && git commit ${tobeCommitted} -m "${message}"`);
+	execSync("git push origin");
+	console.log(`Package has been successfully bumped to: ${targetVersion}`);
+} catch (error) {
+	console.log("Error encountered when version bumping: ", error);
+}
