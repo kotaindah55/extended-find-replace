@@ -13,6 +13,7 @@
 		"strictNullChecks": true,
 		"esModuleInterop": true,
 		"types": ["obsidian-typings"],
+		"libReplacement": false,
 		"lib": [
 			"DOM",
 			"ES5",
