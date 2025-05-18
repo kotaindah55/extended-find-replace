@@ -8,7 +8,9 @@
 		"build": "tsc -noEmit -skipLibCheck && npx tsx scripts/esbuild.config.mts production",
 		"version": "npx tsx scripts/version-bump.mts",
 		"changelog": "npx tsx scripts/print-changelog.mts",
-		"publish": "npx tsx scripts/publish.mts"
+		"publish": "npx tsx scripts/publish.mts",
+		"publish-no-package-lock": "npx tsx scripts/publish.mts no-package-lock",
+		"lock": "npx tsx scripts/lock-package.mts"
 	},
 	"keywords": [
 		"obsidian-plugin"
