@@ -1,7 +1,7 @@
 [1.0.2]
 ### Bug Fix
 Editor mode appears in reading mode.
-
+---
 [1.0.1]
 ### Adjustment
 Primary selection will always be displayed when search panel was opened.

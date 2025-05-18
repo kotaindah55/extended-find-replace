@@ -2,7 +2,7 @@
 
 Overhaul editor find-and-replace functionality. Powered by [CodeMirror](https://codemirror.net) search API.
 
-![banner.png](docs/assets/banner.png)
+![banner.png](docs/res/banner.png)
 
 ## 🚀 Features
 
