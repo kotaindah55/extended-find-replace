@@ -45,9 +45,9 @@ declare module "@codemirror/search" {
 		 * character.
 		 */
 		readonly unquoted: string;
-		getCursor(state: EditorState | Text, from?: number, to?: number): SearchCursor | RegExpCursor;
 		/** Create a `QueryType` instance from this query. */
 		create(): QueryType;
+		getCursor(state: EditorState | Text, from?: number, to?: number): SearchCursor | RegExpCursor;
 	}
 
 	type SearchQueryConfig = ConstructorParameters<typeof SearchQuery>[0];
@@ -60,7 +60,7 @@ declare global {
 }
 
 export interface ExtendedFindReplaceSettings {
+	lastQuery: SearchQueryConfig;
 	rememberLastQuery: boolean;
 	sharedQuery: boolean;
-	lastQuery: SearchQueryConfig;
 }

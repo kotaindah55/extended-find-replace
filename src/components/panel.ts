@@ -35,37 +35,75 @@ interface SearchCounter {
 	exceed: boolean;
 }
 
+/**
+ * Has the same functionality as the built-in one, with some addition
+ * features.
+ */
 export class SearchPanel implements Panel {
+	/**
+	 * Allowed amount that the counter can count the results recursively.
+	 * Needed for performance reason.
+	 */
 	public readonly maxCount = 9999 as const;
 
 	public get top(): boolean { return true }
+	/**
+	 * Whether search field is focused.
+	 */
 	public get searchFocused(): boolean {
 		return this.searchField.inputEl == document.activeElement;
 	}
+	/**
+	 * Whether replace field is focused.
+	 */
 	public get replaceFocused(): boolean {
 		return this.replaceField.inputEl == document.activeElement;
 	}
 
+	/**
+	 * Current `EditorView` this panel attached to.
+	 */
 	public view: EditorView;
+	/**
+	 * Current active `SearchQuery` in the editor.
+	 */
 	public query: SearchQuery;
+	/**
+	 * Current `MarkdownFileInfo` this panel attached to.
+	 */
 	public mdInfo: MarkdownFileInfo;
 	public plugin: ExtendedFindReplacePlugin;
 
 	public dom: HTMLElement;
 	public searchContainerEl: HTMLElement;
 	public replaceContainerEl: HTMLElement;
+	/**
+	 * The element that's responsible for showing the amount of match
+	 * results.
+	 */
 	public counterEl: HTMLElement | null = null;
 
 	public searchField: SearchComponent;
 	public replaceField: TextComponent;
 
+	/**
+	 * Store temporarily match results' positions in `Uint32Array`. Used
+	 * as counter reference.
+	 */
 	public matchBuffer: RangeBuffer = new RangeBuffer(this.maxCount + 1);
+	/**
+	 * Indicate current counter state. If `exceed` is `true`, it indicates
+	 * that the amount of match results actually exceeds the `maxCount`.
+	 */
 	public counter: SearchCounter = {
 		current: 0,
 		total: 0,
 		exceed: false
 	};
 
+	/**
+	 * Whether replace field should be displayed.
+	 */
 	public showReplace: boolean;
 
 	constructor(view: EditorView, plugin: ExtendedFindReplacePlugin) {
@@ -75,11 +113,18 @@ export class SearchPanel implements Panel {
 		this.showReplace = view.state.facet(showReplace);
 		this.plugin = plugin;
 		
+		// Hide native search whenever this panel is going to be displayed.
 		hideNativeSearch(this.mdInfo);
 		this._drawDOM();
 		this._requestCounter();
 	}
 
+	/**
+	 * Commit search query to the `EditorState`.
+	 * 
+	 * @param query You can use `SearchQuery` instance or any object that
+	 * represents search query config.
+	 */
 	public commit(query: Partial<Writable<SearchQuery>>): void {
 		let appliedQuery = updateQuery(this.query, query);
 
@@ -91,13 +136,22 @@ export class SearchPanel implements Panel {
 		}
 	}
 
+	/**
+	 * Keydown handler.
+	 */
 	public keydown(keyboardEvt: KeyboardEvent): void {
 		if (runScopeHandlers(this.view, keyboardEvt, "search-panel"))
 			keyboardEvt.preventDefault();
 	}
 
+	/**
+	 * Listen to editor updates. Responsible for updating search query and
+	 * controlling whether the panel should be displayed.
+	 */
 	public update(update: ViewUpdate): void {
 		let resetCounter = false;
+
+		// Search any effect that brings query update.
 		for (let tr of update.transactions)
 			for (let effect of tr.effects) {
 				if (effect.is(setSearchQuery) && !this._compare(effect.value)) {
@@ -109,11 +163,13 @@ export class SearchPanel implements Panel {
 		if (update.docChanged)
 			resetCounter = true;
 
+		// Recounting match results.
 		if (resetCounter) {
 			this.matchBuffer.flush();
 			this._requestCounter();
 		}
 
+		// Listen for the user action/command that toggles this panel.
 		if (update.transactions.some(tr => {
 			let config = tr.annotation(searchPanelChange);
 			if (config) {
@@ -142,6 +198,9 @@ export class SearchPanel implements Panel {
 		this._onDestroy();
 	}
 
+	/**
+	 * Find next match.
+	 */
 	public findNext(): boolean {
 		let succeed = findNext(this.view);
 		this._count();
@@ -149,6 +208,9 @@ export class SearchPanel implements Panel {
 		return succeed;
 	}
 
+	/**
+	 * Find previous match.
+	 */
 	public findPrev(): boolean {
 		let succeed = findPrevious(this.view);
 		this._count();
@@ -156,45 +218,74 @@ export class SearchPanel implements Panel {
 		return succeed;
 	}
 
+	/**
+	 * Find all matches.
+	 */
 	public findAll(): boolean {
 		let succeed = selectMatches(this.view);
 		this._highlight();
 		return succeed;
 	}
 
+	/**
+	 * Find all mathces that are match selected text.
+	 */
 	public findSelected(): boolean {
 		return selectSelectionMatches(this.view);
 	}
 
+	/**
+	 * Replace next match.
+	 */
 	public replaceNext(): boolean {
 		return replaceNext(this.view);
 	}
 
+	/**
+	 * Replace all matches.
+	 */
 	public replaceAll(): boolean {
 		return replaceAll(this.view);
 	}
 
+	/**
+	 * Replace all matches that are in selection range.
+	 */
 	public replaceInSelection(): boolean {
 		return replaceInSelection(this.view);
 	}
 
+	/**
+	 * Close this panel and destroy everythings inside.
+	 */
 	public close(): boolean {
 		return closeSearchPanel(this.view);
 	}
 
+	/**
+	 * Distinguish current match with different highlight.
+	 */
 	private _highlight(): void {
 		if (!this.mdInfo.editor || !this.counter.total) return;
 
 		let { editor } = this.mdInfo,
 			ranges = selectionsToRanges(editor.listSelections());
 
+		// Without this, any embed element such as callout cannot be highlighted,
+		// due to, in fact, they are widget decorations.
 		editor.addHighlights(ranges, "obsidian-search-match-highlight", true);
 	}
 
+	/**
+	 * Remove distinguishable highlight from the current match.
+	 */
 	private _removeHighlight(): void {
 		this.mdInfo.editor?.removeHighlights("obsidian-search-match-highlight");
 	}
 
+	/**
+	 * Compare equality of this query with the another one.
+	 */
 	private _compare(other: SearchQuery): boolean {
 		return (
 			this.query.eq(other) &&
@@ -202,10 +293,17 @@ export class SearchPanel implements Panel {
 		);
 	}
 
+	/**
+	 * Replace this query with the another one.
+	 * 
+	 * @param internal Assign it to `true` if the `query` is produced by
+	 * `commit()`, not the editor update.
+	 */
 	private _setQuery(query: SearchQuery, internal: boolean): void {
 		this.query = query;
 		this._removeHighlight();
 		if (internal) {
+			// Internally produced query should be shared and stored.
 			let { sharedQuery, rememberLastQuery } = this.plugin.settings;
 			if (sharedQuery) this.plugin.shareQuery(query, this.view);
 			if (rememberLastQuery) this.plugin.saveQuery(query);
@@ -215,6 +313,10 @@ export class SearchPanel implements Panel {
 		}
 	}
 
+	/**
+	 * Count and look for the next current match. Supposedly, current match
+	 * has the nearest position to the selection or the cursor.
+	 */
 	private _count(): void {
 		let lastSelection = this.view.state.selection.ranges.at(-1)!,
 			index = this.counter.current, // 1-based
@@ -223,6 +325,8 @@ export class SearchPanel implements Panel {
 		
 		if (!max) return;
 
+		// Efficiently trace next current match from previous current match
+		// position.
 		let curMatch = this.matchBuffer.get(index - 1);
 		while (!curMatch || curMatch.to <= lastSelection.from && index < max) {
 			this.counter.current = ++index;
@@ -239,6 +343,12 @@ export class SearchPanel implements Panel {
 		this._drawCounter();
 	}
 
+	/**
+	 * Reset the counter to its initial (i.e. empty) state and start
+	 * counting the amount of the current match results.
+	 * 
+	 * @remarks Use `_requestCounter()` instead.
+	 */
 	private _setCounter(): void {
 		this.counter = { total: 0, current: 0, exceed: false };
 		if (!this.query.search || !this.query.valid) {
@@ -248,6 +358,8 @@ export class SearchPanel implements Panel {
 
 		let cursor = this.query.getCursor(this.view.state);
 
+		// Stopped when the cursor reached the end, or the total reached its
+		// allowed amount.
 		while (!cursor.next().done && this.counter.total < this.maxCount) {
 			this.counter.total++;
 			this.matchBuffer.set(this.counter.total - 1, cursor.value);
@@ -258,17 +370,30 @@ export class SearchPanel implements Panel {
 		this._drawCounter();
 	}
 
+	/**
+	 * Draw the counter to the DOM.
+	 */
 	private _drawCounter(): void {
 		if (!this.counterEl) return;
 		this.counterEl.innerText =
 			`${this.counter.current} / ${this.counter.total}${this.counter.exceed ? "+" : ""}`;
 	}
 
+	/**
+	 * Use this to (re)set the counter, preventing multiple rapid executions.
+	 */
 	private _requestCounter = debounce(this._setCounter, 50, true);
 
+	/**
+	 * Draw search panel to the DOM.
+	 */
 	private _drawDOM(): void {
-		this.searchContainerEl = document.createElement("div");
-		this.searchContainerEl.addClass("document-search");
+		this.dom = createDiv(
+			{ cls: "cm-search-panel document-search-container" },
+			div => div.addEventListener("keydown", evt => this.keydown(evt))
+		);
+
+		this.searchContainerEl = this.dom.createDiv({ cls: "document-search" });
 		this.searchField = createSearch({
 			parentEl: this.searchContainerEl,
 			containerClass: ["document-search-input"],
@@ -292,8 +417,7 @@ export class SearchPanel implements Panel {
 		this.counterEl = this.searchField.containerEl.querySelector(".document-search-count");
 		this.counterEl?.removeClass("clickable-icon");
 
-		this.replaceContainerEl = document.createElement("div");
-		this.replaceContainerEl.addClass("document-replace");
+		this.replaceContainerEl = this.dom.createDiv({ cls: "document-replace" });
 		this.replaceField = new TextComponent(this.replaceContainerEl)
 			.setPlaceholder("Replace...")
 			.setValue(this.query.replace)
@@ -302,13 +426,8 @@ export class SearchPanel implements Panel {
 				replaceField.inputEl.addClass("document-replace-input");
 			});
 
-		this.dom = document.createElement("div");
-		this.dom.addClass("cm-search-panel", "document-search-container");
-		this.dom.append(this.searchContainerEl, this.replaceContainerEl);
-		this.dom.addEventListener("keydown", evt => this.keydown(evt));
-
 		let searchBtnsContainer =
-			this.searchContainerEl.createDiv({ cls: ["document-search-buttons"] });
+			this.searchContainerEl.createDiv({ cls: "document-search-buttons" });
 
 		// Find previous button
 		new ExtraButtonComponent(searchBtnsContainer)
@@ -349,6 +468,7 @@ export class SearchPanel implements Panel {
 				});
 			});
 
+		// Toggle replace button
 		new ExtraButtonComponent(this.searchContainerEl)
 			.setIcon("chevron-down")
 			.setTooltip(this.showReplace ? "Hide replace" : "Show replace", { placement: "top" })
@@ -361,6 +481,7 @@ export class SearchPanel implements Panel {
 				}
 			})
 			.extraSettingsEl.addClass("replace-toggle-btn");
+
 		// Close search button
 		new ExtraButtonComponent(this.searchContainerEl)
 			.setIcon("x")
@@ -368,22 +489,32 @@ export class SearchPanel implements Panel {
 			.onClick(() => this.close());
 
 		let replaceBtnsContainer =
-			this.replaceContainerEl.createDiv({ cls: ["document-replace-buttons"] });
+			this.replaceContainerEl.createDiv({ cls: "document-replace-buttons" });
 
+		// Replace button
 		new ExtraButtonComponent(replaceBtnsContainer)
 			.setIcon("replace")
 			.setTooltip("Replace\nEnter", { placement: "top" })
 			.onClick(() => this.replaceNext());
+
+		// Replace all button
 		new ExtraButtonComponent(replaceBtnsContainer)
 			.setIcon("replace-all")
 			.setTooltip("Replace all\nCtrl + Alt + Enter", { placement: "top" })
 			.onClick(() => this.replaceAll());
+		
+		// Replace in selection button
 		new ExtraButtonComponent(replaceBtnsContainer)
 			.setIcon("text-cursor-input")
 			.setTooltip("Replace in selection", { placement: "top" })
 			.onClick(() => this.replaceInSelection());
 	}
 
+	/**
+	 * Open rule options provided by this panel.
+	 * 
+	 * @param evt `MouseEvent` the menu will be located at.
+	 */
 	private _openRuleMenu(evt: MouseEvent): void {
 		new Menu()
 			.addItem(item => {
@@ -425,6 +556,9 @@ export class SearchPanel implements Panel {
 			.showAtMouseEvent(evt);
 	}
 
+	/**
+	 * Whether display the counter. Will hide it when search query is empty.
+	 */
 	private _toggleCounterEl(): void {
 		if (this.query.search) {
 			if (!this.searchContainerEl.hasClass("show-counter"))
@@ -434,6 +568,9 @@ export class SearchPanel implements Panel {
 		}
 	}
 
+	/**
+	 * Whether display this panel's replace field.
+	 */
 	private _toggleReplaceEl(): void {
 		if (this.showReplace) {
 			this.dom.addClass("mod-replace-mode");
@@ -448,12 +585,20 @@ export class SearchPanel implements Panel {
 		}
 	}
 
+	/**
+	 * Attach search keymaps to the `mdInfo`.
+	 */
 	private _attachHandlers(): void {
 		bindSearchScope(this);
 	}
 
+	/**
+	 * Onmount handler.
+	 */
 	private _onMount(): void {
 		setTimeout(() => {
+			// Use DOM element for the primary selection. Keep the primary selection
+			// rendered while the search/replace input is focused.
 			this.view.dispatch({
 				effects: primarySelectionAdjust.reconfigure(primarySelectionFallback)
 			});
@@ -461,8 +606,12 @@ export class SearchPanel implements Panel {
 		});
 	}
 
+	/**
+	 * Ondestroy handler.
+	 */
 	private _onDestroy(): void {
 		setTimeout(() => {
+			// Restore primary selection fallback with the native one.
 			this.view.dispatch({
 				effects: primarySelectionAdjust.reconfigure([])
 			});

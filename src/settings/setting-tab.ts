@@ -16,29 +16,23 @@ export class ExtendedFindReplaceSettingTab extends PluginSettingTab {
 		new Setting(containerEl)
 			.setName("Shared query")
 			.setDesc("Same search query will be shared among all available editors.")
-			.addToggle(toggle => {
-				toggle
-					.setValue(this.plugin.settings.sharedQuery)
-					.onChange(val => {
-						this.plugin.settings.sharedQuery = val;
-						if (val) {
-							this._onHideListeners = () => {
-								this.plugin.shareQuery();
-							};
-						}
-					});
-			});
+			.addToggle(toggle => toggle
+				.setValue(this.plugin.settings.sharedQuery)
+				.onChange(val => {
+					this.plugin.settings.sharedQuery = val;
+					if (val) this._onHideListeners = () => {
+						this.plugin.shareQuery();
+					};
+				})
+			);
 
 		new Setting(containerEl)
 			.setName("Remember last query")
 			.setDesc("Save last input query.")
-			.addToggle(toggle => {
-				toggle
-					.setValue(this.plugin.settings.rememberLastQuery)
-					.onChange(val => {
-						this.plugin.settings.rememberLastQuery = val;
-					});
-			});
+			.addToggle(toggle => toggle
+				.setValue(this.plugin.settings.rememberLastQuery)
+				.onChange(val => this.plugin.settings.rememberLastQuery = val)
+			);
 	}
 
 	public hide(): void {

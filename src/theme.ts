@@ -21,4 +21,4 @@ export const defaultTheme = EditorView.theme({
 	"span.obsidian-search-match-highlight:has(.cm-searchMatch-selected)": {
 		transition: "box-shadow 0.1s ease-in-out"
 	}
-})
+});
